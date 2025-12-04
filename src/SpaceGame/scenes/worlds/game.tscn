@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dc8u5st0v7cuc"]
+[gd_scene load_steps=12 format=3 uid="uid://dc8u5st0v7cuc"]
 
 [ext_resource type="Script" uid="uid://dl2tp02e3ni50" path="res://scripts/sceneScripts/multiplayerSetup.gd" id="1_sxdjj"]
 [ext_resource type="PackedScene" uid="uid://dlamcauoiqauo" path="res://scenes/player/player.tscn" id="2_3wcec"]
@@ -6,15 +6,21 @@
 [ext_resource type="PackedScene" uid="uid://dvymktxc782ww" path="res://scenes/objects/spaceShip/spaceShip.tscn" id="4_d4ef8"]
 [ext_resource type="Texture2D" uid="uid://1d7eexj3bkmg" path="res://icon.svg" id="4_pah46"]
 [ext_resource type="Script" uid="uid://d14hi38r3kvkl" path="res://scripts/obstacles/asteroidSpawner.gd" id="6_a0dhw"]
+[ext_resource type="Script" uid="uid://m3chqt37jbmq" path="res://scripts/nicePlanets/finalPlanetSpawner.gd" id="6_dek03"]
+[ext_resource type="Script" uid="uid://c6y7gda723uxq" path="res://scripts/obstacles/obstacleSpawner.gd" id="7_hr60g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nn8y0"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.20068228, 0.20539838, 0.21484071, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.20775539, 0.21259311, 0.22227898, 1)
 
-[sub_resource type="Sky" id="Sky_70art"]
+[sub_resource type="Sky" id="Sky_dek03"]
 sky_material = SubResource("ProceduralSkyMaterial_nn8y0")
 
 [sub_resource type="Environment" id="Environment_0wfyh"]
 background_mode = 2
-sky = SubResource("Sky_70art")
+sky = SubResource("Sky_dek03")
 tonemap_mode = 2
 glow_enabled = true
 
@@ -27,15 +33,17 @@ spaceShip = NodePath("stage/SpaceShip")
 
 [node name="SpaceShip" parent="stage" instance=ExtResource("4_d4ef8")]
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="stage/SpaceShip"]
-_spawnable_scenes = PackedStringArray("uid://dlamcauoiqauo")
-spawn_path = NodePath("..")
-
 [node name="Button" parent="stage/SpaceShip" instance=ExtResource("3_3wcec")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06791973, 0.13407707, 0.20576143)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06791973, -0.45559257, 2.3152924)
 
 [node name="asteroidSpawner" type="Node3D" parent="stage"]
 script = ExtResource("6_a0dhw")
+
+[node name="finalPlanetSpawner" type="Node3D" parent="stage"]
+script = ExtResource("6_dek03")
+
+[node name="obstacleSpawner" type="Node3D" parent="stage"]
+script = ExtResource("7_hr60g")
 
 [node name="envrionment" type="Node3D" parent="."]
 
@@ -48,7 +56,21 @@ environment = SubResource("Environment_0wfyh")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
-position = Vector2(576, 324)
-scale = Vector2(0.1, 0.1)
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("4_pah46")
+expand_mode = 1
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://dlamcauoiqauo")
+spawn_path = NodePath("../stage/SpaceShip")

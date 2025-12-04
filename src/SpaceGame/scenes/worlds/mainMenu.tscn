@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://sdvgbbg6mmo1"]
+[gd_scene load_steps=5 format=3 uid="uid://sdvgbbg6mmo1"]
 
 [ext_resource type="Script" uid="uid://dbmwdlytuhpeq" path="res://scripts/sceneScripts/mainMenu.gd" id="1_8poju"]
+[ext_resource type="Texture2D" uid="uid://bb60pj7mn08fk" path="res://models/image.png" id="2_fv6xl"]
+[ext_resource type="Texture2D" uid="uid://bnseu30hswvhe" path="res://models/download.png" id="3_02dtv"]
+[ext_resource type="Texture2D" uid="uid://sibc0oa2rq73" path="res://models/credits.png" id="4_ye7im"]
 
-[node name="MainMenu" type="Node2D" node_paths=PackedStringArray("textIP", "textPort", "textPortHost", "joinlobbyButton", "hostLobbyButton", "hostButton", "joinButton")]
+[node name="MainMenu" type="Node2D" node_paths=PackedStringArray("textIP", "textPort", "textPortHost", "joinlobbyButton", "hostLobbyButton", "hostButton", "joinButton", "creditsImage", "exitButton", "creditButton")]
 script = ExtResource("1_8poju")
 textIP = NodePath("CanvasLayer/IP")
 textPort = NodePath("CanvasLayer/Port")
@@ -11,9 +14,31 @@ joinlobbyButton = NodePath("CanvasLayer/joinLobby")
 hostLobbyButton = NodePath("CanvasLayer/hostLobby")
 hostButton = NodePath("CanvasLayer/Host")
 joinButton = NodePath("CanvasLayer/Join")
+creditsImage = NodePath("CanvasLayer/TextureRect")
+exitButton = NodePath("CanvasLayer/exit")
+creditButton = NodePath("CanvasLayer/credits")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-script = ExtResource("1_8poju")
+
+[node name="bg" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = -0.2109375
+anchor_top = -0.36265433
+anchor_right = 1.4557291
+anchor_bottom = 1.3040123
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_fv6xl")
+metadata/_edit_use_anchors_ = true
+
+[node name="text" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.027777778
+anchor_right = 0.5751919
+anchor_bottom = 0.5478395
+texture = ExtResource("3_02dtv")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Host" type="Button" parent="CanvasLayer"]
 visible = false
@@ -25,6 +50,7 @@ anchor_bottom = 0.8009259
 grow_vertical = 0
 size_flags_horizontal = 0
 size_flags_vertical = 8
+theme_override_font_sizes/font_size = 24
 text = "Start Game"
 metadata/_edit_use_anchors_ = true
 
@@ -37,6 +63,7 @@ anchor_right = 0.6649306
 anchor_bottom = 0.9351852
 grow_vertical = 0
 size_flags_vertical = 8
+theme_override_font_sizes/font_size = 24
 text = "Join Game"
 metadata/_edit_use_anchors_ = true
 
@@ -48,6 +75,7 @@ anchor_top = 0.8194444
 anchor_right = 0.32725695
 anchor_bottom = 0.9351852
 size_flags_vertical = 8
+theme_override_font_sizes/font_size = 24
 text = "127.0.0.1"
 placeholder_text = "Ip"
 metadata/_edit_use_anchors_ = true
@@ -60,6 +88,7 @@ anchor_top = 0.82098764
 anchor_right = 0.4722222
 anchor_bottom = 0.9367284
 size_flags_vertical = 8
+theme_override_font_sizes/font_size = 24
 text = "1024"
 placeholder_text = "Port"
 metadata/_edit_use_anchors_ = true
@@ -71,6 +100,7 @@ anchor_left = 0.038194444
 anchor_top = 0.5787037
 anchor_right = 0.1423611
 anchor_bottom = 0.80246913
+theme_override_font_sizes/font_size = 24
 text = "1024"
 placeholder_text = "Port"
 metadata/_edit_use_anchors_ = true
@@ -81,6 +111,7 @@ anchor_left = 0.0390625
 anchor_top = 0.81790125
 anchor_right = 0.6649306
 anchor_bottom = 0.94753087
+theme_override_font_sizes/font_size = 32
 text = "Join"
 metadata/_edit_use_anchors_ = true
 
@@ -90,10 +121,40 @@ anchor_left = 0.0390625
 anchor_top = 0.56790125
 anchor_right = 0.6684028
 anchor_bottom = 0.8101852
+theme_override_font_sizes/font_size = 32
 text = "Host"
 metadata/_edit_use_anchors_ = true
+
+[node name="credits" type="Button" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.8177083
+anchor_top = 0.8657407
+anchor_right = 0.9809028
+anchor_bottom = 0.9583333
+text = "Credits"
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+visible = false
+anchors_preset = -1
+anchor_right = 1.0052084
+anchor_bottom = 1.0108025
+texture = ExtResource("4_ye7im")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="exit" type="Button" parent="CanvasLayer"]
+visible = false
+offset_left = 1035.0
+offset_top = 25.0
+offset_right = 1130.0
+offset_bottom = 117.0
+theme_override_font_sizes/font_size = 61
+text = "X"
 
 [connection signal="pressed" from="CanvasLayer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="CanvasLayer/Join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="CanvasLayer/joinLobby" to="." method="_on_join_lobby_pressed"]
 [connection signal="pressed" from="CanvasLayer/hostLobby" to="." method="_on_host_lobby_pressed"]
+[connection signal="pressed" from="CanvasLayer/credits" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="CanvasLayer/exit" to="." method="_on_exit_pressed"]

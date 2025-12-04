@@ -6,8 +6,9 @@ extends CharacterBody3D
 @export var acceleration = 4.0
 @export var airAcceleration = 1.0
 @export var friction = 5.0
+@export var currentFriction = 0
 @export var airFriction = 0.5
-@export var enableMovement = true
+var enableMovement = true
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 # ===== Camera variables =====
@@ -17,7 +18,10 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 # ===== Node references =====
 @export var head: Node3D
 @export var camera: Camera3D
-var sendStartSignal = Node
+@export var input : PlayerInput
+@onready var multiplayerSetup = $"../../../.."
+#var spaceShip : CharacterBody3D
+var sendStartSignal : Node
 
 # ===== Interaction =====
 var lookAt : Node
@@ -27,18 +31,25 @@ func _enter_tree():
 	set_multiplayer_authority(get_parent().name.to_int())
 
 func _ready():
+	if !is_multiplayer_authority():
+		return
+	await get_tree().process_frame
+	#spaceShip = $"/root/sceneSwitcher/world/stage/SpaceShip"
 	sendStartSignal = $"/root/sceneSwitcher/startGameSignal"
 	sendStartSignal.connect("startGame", Callable(self, "_setPause").bind(true))
+	sendStartSignal.connect("endGame", Callable(self, "die"))
+	sendStartSignal.connect("sendDie", Callable(self, "die"))
 	self.visible = !is_multiplayer_authority()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = is_multiplayer_authority()
 	
-	if is_multiplayer_authority():
-		self.position = Vector3(0, 10, 0)
-		velocity = Vector3.ZERO
+	interactTrace.collide_with_areas = true
+	floor_stop_on_slope = true
+	
+	self.position = Vector3(0, 10, 0)
+	velocity = Vector3.ZERO
 		
-
 # ===== Mouse input =====
 func _unhandled_input(event) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -48,38 +59,35 @@ func _unhandled_input(event) -> void:
 
 # ===== Movement =====
 func _physics_process(delta: float) -> void:
+	
 	if Input.is_action_just_pressed("pause"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if Input.is_action_just_pressed("debug"):
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	if !is_multiplayer_authority():
 		return
-	if !enableMovement:
-		velocity = Vector3.ZERO
-		move_and_slide()
-		return
-		
-	# Gravity
-	if not is_on_floor():
-		velocity.y -= gravity * delta
+	#var floorNormal = get_parent().transform.basis.y.normalized()
+	#self.up_direction = floorNormal
 
-	# Jump
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = jumpVelocity
-
-	# Get input vector
-	var input_dir = Input.get_vector("left", "right", "forward", "backward")
 	# Convert input into a world space direction using the global transform
-	var direction = Vector3(input_dir.x, 0, input_dir.y)
-
-	# Rotate input direction by the player's global facing (including parent)
+	var inputDir = Input.get_vector("left", "right", "forward", "backward")
+	var direction = Vector3(inputDir.x, 0, inputDir.y)
+	
+	# Rotate input direction by the player's global facing 
 	direction = global_transform.basis * direction
 	direction.y = 0  # Keep movement horizontal
 	direction = direction.normalized() if direction.length() > 0 else Vector3.ZERO
 
+
 	# Movement variables
 	var currentAcceleration = acceleration if is_on_floor() else airAcceleration
-	var currentFriction = friction if is_on_floor() else airFriction
-
+	currentFriction = friction if is_on_floor() else airFriction
+	
+	# stop movement
+	if !enableMovement:
+		direction = Vector3.ZERO
+	
 	# Apply acceleration/friction
 	if direction != Vector3.ZERO:
 		velocity.x = move_toward(velocity.x, direction.x * speed, currentAcceleration * delta)
@@ -87,6 +95,14 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, currentFriction * delta)
 		velocity.z = move_toward(velocity.z, 0, currentFriction * delta)
+		
+	# Gravity
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+		
+	# jump
+	#if Input.is_action_just_pressed("jump"):
+		#velocity.y += gravity * delta * 5
 
 	move_and_slide()
 
@@ -95,11 +111,10 @@ func _process(_delta: float) -> void:
 	if !is_multiplayer_authority():
 		return
 	
-	if Input.is_action_just_pressed("interact"):
-		lookAt = interactTrace.get_collider()
-		if lookAt != null:
-			lookAt = lookAt.get_parent()
-			if lookAt.has_method("interactAction"):
+	lookAt = interactTrace.get_collider()
+	if lookAt != null:
+		lookAt = lookAt.get_parent()
+		if Input.is_action_just_pressed("interact") and lookAt.has_method("interactAction"):
 				lookAt.interactAction(self)
 
 # ===== Enable/Disable Movement =====
@@ -110,3 +125,14 @@ func _setPause(setPause : bool):
 	else:
 		enableMovement = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func _setCamerPos(pos : Vector3):
+	head.position = pos
+	
+func die():
+	if !multiplayer.is_server():
+		rpc("sendDieAsServer", get_multiplayer_authority())
+
+@rpc("authority")
+func sendDieAsSerer(id):
+	multiplayerSetup.exitGame(id)

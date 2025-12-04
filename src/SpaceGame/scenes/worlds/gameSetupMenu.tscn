@@ -1,0 +1,95 @@
+[gd_scene load_steps=2 format=3 uid="uid://d2uod4vdkytnm"]
+
+[ext_resource type="Script" uid="uid://cklqbf2j71b1" path="res://scripts/sceneScripts/startGame.gd" id="1_lvhmg"]
+
+[node name="GameSetup" type="CanvasLayer" node_paths=PackedStringArray("rentLine", "fuelLine", "planetDistanceLine", "seedLine")]
+script = ExtResource("1_lvhmg")
+rentLine = NodePath("rentLine")
+fuelLine = NodePath("fuelLine")
+planetDistanceLine = NodePath("finalPlanetDistanceLine")
+seedLine = NodePath("seedLine")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = -1
+anchor_left = 0.5477431
+anchor_top = 0.39660493
+anchor_right = 0.7126736
+anchor_bottom = 0.7484568
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1882353, 0.20392157, 0.22352941, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="."]
+anchors_preset = -1
+anchor_left = 0.5512153
+anchor_top = 0.7638889
+anchor_right = 0.9704861
+anchor_bottom = 0.9521605
+grow_horizontal = 2
+grow_vertical = 2
+text = "Start"
+metadata/_edit_use_anchors_ = true
+
+[node name="rentLine" type="LineEdit" parent="."]
+anchors_preset = -1
+anchor_left = 0.71875
+anchor_top = 0.39814815
+anchor_right = 0.9644097
+anchor_bottom = 0.46373457
+grow_horizontal = 2
+grow_vertical = 2
+placeholder_text = "rent"
+metadata/_edit_use_anchors_ = true
+
+[node name="fuelLine" type="LineEdit" parent="."]
+anchors_preset = -1
+anchor_left = 0.71875
+anchor_top = 0.4845679
+anchor_right = 0.9644097
+anchor_bottom = 0.5501543
+grow_horizontal = 2
+grow_vertical = 2
+placeholder_text = "fuel"
+metadata/_edit_use_anchors_ = true
+
+[node name="finalPlanetDistanceLine" type="LineEdit" parent="."]
+anchors_preset = -1
+anchor_left = 0.7170139
+anchor_top = 0.57253087
+anchor_right = 0.9635417
+anchor_bottom = 0.6381173
+offset_bottom = -3.0517578e-05
+grow_horizontal = 2
+grow_vertical = 2
+placeholder_text = "final planet distance"
+metadata/_edit_use_anchors_ = true
+
+[node name="seedLine" type="LineEdit" parent="."]
+anchors_preset = -1
+anchor_left = 0.7170139
+anchor_top = 0.6697531
+anchor_right = 0.9644097
+anchor_bottom = 0.7353395
+grow_horizontal = 2
+grow_vertical = 2
+placeholder_text = "seed"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = -1
+anchor_left = 0.5564236
+anchor_top = 0.41666666
+anchor_right = 0.7048611
+anchor_bottom = 0.7160494
+grow_horizontal = 2
+grow_vertical = 2
+text = "Rent
+Fuel
+Home Planet Distance
+Seed"
+horizontal_alignment = 1
+vertical_alignment = 3
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

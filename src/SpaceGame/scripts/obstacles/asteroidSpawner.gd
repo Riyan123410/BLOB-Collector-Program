@@ -1,27 +1,49 @@
 class_name AsteroidField extends Node3D
 
 var asteroids = [
-	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn")
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/objects/obstacles/asteroids/asteroid.tscn"),
+	preload("res://scenes/planets/resourcePlanets/resourcePlanet.tscn")
 	]
 
 var player = null
 
-const RADIUS:int = 5 # The grid "radius." aka: Half the number of grid cells minus 1. Use an odd number so that a middle exists.
+const RADIUS:int = 3 # The grid "radius." aka: Half the number of grid cells minus 1. Use an odd number so that a middle exists.
 var WIDTH := 2*RADIUS+1 # Width (in cells) of the cube
-const GRID_SIZE:int = 700 # Width in meters of a sub-cube DEFAULT: 800
-const DENSITY:float = 0.4 # percentage of grid cells containing asteroids DEFAULT: 8%
-const MIN_SCALE:float = 5.0 # Minimum scale of the asteroids DEFAULT: 50
-const MAX_SCALE:float = 500.0 # Maximum scale of the asteroids DEFAULT: 1200
+const GRID_SIZE:int = 25 # Width in meters of a sub-cube DEFAULT: 800
+const DENSITY:float = 0.2 # percentage of grid cells containing asteroids DEFAULT: 8%
+const MIN_SCALE:float = 1.0 # Minimum scale of the asteroids DEFAULT: 50
+const MAX_SCALE:float = 20.0 # Maximum scale of the asteroids DEFAULT: 1200
 
 var asteroid_array:Array # Array of asteroids in each cell (if any).
 var position_array:Array # Array of positions at the center of each cell.
 var center := Vector3i.ZERO # Possibly previous (or current) cell index of the player
 var player_center := Vector3i.ZERO # Current cell index of the player
 
+# connect to signal to set seed
+func _ready() -> void:
+	var sendStartSignal = $"/root/sceneSwitcher/startGameSignal"
+	sendStartSignal.connect("syncSeed", Callable(self, "setSeed"))
+func setSeed(randSeed):
+	for child in get_children():
+		child.queue_free()
+	seed(randSeed)
+
 # This function is used instead of the _ready function
 # because the Global player reference needs to be set before the
 # asteroid field, since the player is referenced in this function.
 func generate_field(playerInput) -> void:
+	
+	#if !multiplayer.is_server():
+		#return
+	
 	player = playerInput
 	# Center the player in the middle of the asteroid field.
 	# If the radius is 1 then there will be a 3x3 cube of asteroids
@@ -30,6 +52,7 @@ func generate_field(playerInput) -> void:
 	# RADIUS is 1 and index 1 is in the center of 0,1,2
 	# Add 0.5 and mult by GRID_SIZE to be in the global position center.
 	player.global_position = Vector3(RADIUS+0.5, RADIUS+0.5, RADIUS+0.5) * GRID_SIZE
+	#print(Vector3(RADIUS+0.5, RADIUS+0.5, RADIUS+0.5) * GRID_SIZE)
 	# You MUST use floor here, otherwise the player can become
 	# off center, because when integer division rounds "down"
 	# everything from -0.999 to 0.999 becomes zero, but that
@@ -44,7 +67,7 @@ func generate_field(playerInput) -> void:
 	# Random seed for consistency, but also make sure to choose
 	# a seed and DENSITY such that an asteroid never spawns
 	# at the same position as the player.
-	seed(83833)
+	#seed(83833)
 	# Create the cube of asteroids around the player
 	var pos:Vector3
 	for i in WIDTH:
@@ -104,6 +127,7 @@ func create_asteroid(pos:Vector3, grow_in:=true) -> Asteroid:
 func _process(_delta: float) -> void:
 	if player == null:
 		return
+	
 	# Update player center
 	# You MUST use floor here, otherwise the player can become
 	# off center, because when integer division rounds "down"

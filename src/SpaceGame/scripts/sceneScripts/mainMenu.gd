@@ -13,10 +13,17 @@ signal levelChanged(levelNum)
 @export var hostButton : Button
 @export var joinButton : Button
 
+@export var creditsImage : TextureRect
+@export var exitButton : Button
+@export var creditButton : Button
+
 var isHost = 0
 var IPjoin = "127.0.0.1"
 var portJoin = "1024"
 var portHost = "1024"
+
+func _ready() -> void:
+	creditButton.visible = false
 
 func _on_host_pressed() -> void:
 	isHost = 1
@@ -48,3 +55,12 @@ func setHostButtonVisibility(show : bool):
 	hostLobbyButton.visible = !show
 	hostButton.visible = show
 	textPortHost.visible = show
+
+
+func _on_credits_pressed() -> void:
+	creditsImage.visible = true
+	exitButton.visible = true
+
+func _on_exit_pressed() -> void:
+	creditsImage.visible = false
+	exitButton.visible = false

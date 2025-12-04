@@ -8,14 +8,15 @@ albedo_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_67mg7"]
 material = SubResource("StandardMaterial3D_dy5ot")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8xtf1"]
-size = Vector3(1.2194014, 1.1442418, 1.3161411)
+[sub_resource type="SphereShape3D" id="SphereShape3D_67mg7"]
 
-[node name="MeshInstance3D" type="MeshInstance3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" node_paths=PackedStringArray("hitbox")]
 mesh = SubResource("SphereMesh_67mg7")
 script = ExtResource("1_67mg7")
+hitbox = NodePath("Area3D")
 
 [node name="Area3D" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("BoxShape3D_8xtf1")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0015940666, 0.0025081038, 0.0010771155)
+shape = SubResource("SphereShape3D_67mg7")

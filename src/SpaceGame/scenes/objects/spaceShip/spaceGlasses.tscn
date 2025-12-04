@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://yiard1ej44hf"]
+
+[ext_resource type="Script" uid="uid://b04clv8f83hai" path="res://scripts/interactables/spaceGlasses.gd" id="1_4reej"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_2s7p7"]
+height = 0.6799927
+
+[node name="SpaceGlasses" type="Node3D"]
+script = ExtResource("1_4reej")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31657338, 0)
+shape = SubResource("CylinderShape3D_2s7p7")
