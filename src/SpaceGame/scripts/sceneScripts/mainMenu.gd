@@ -23,7 +23,7 @@ var portJoin = "1024"
 var portHost = "1024"
 
 func _ready() -> void:
-	creditButton.visible = false
+	creditButton.visible = true
 
 func _on_host_pressed() -> void:
 	isHost = 1

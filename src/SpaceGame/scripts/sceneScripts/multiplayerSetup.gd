@@ -22,6 +22,9 @@ func _process(_delta: float) -> void:
 		elif isHost == 2:
 			runClient()
 			loop = false
+	
+	if Input.is_action_just_pressed("pause"):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func runHost():
 	peer.create_server(portHost)
