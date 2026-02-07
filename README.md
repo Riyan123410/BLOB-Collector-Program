@@ -1,4 +1,4 @@
-# Space Game
+# BLOB Collector Program
 A game where you collect asteroids wiht your friends for money before the time limit and it gets harder.
 
 ## Objective
